@@ -18,7 +18,7 @@ do
 end
 
 API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
-	if not API.ImGui.IsMainMenuOpen() then return end
+	if not API.GUI.GetVisible() then return end
 
 	local ScrW, ScrH = ScrW(), ScrH()
 	local DeltaTime = FrameTime()

@@ -18,7 +18,8 @@ do
 end
 
 API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
-	if not API.GUI.GetVisible() then return end
+	local Alpha = API.GUI.GetAlpha()
+	if Alpha < 0.01 then return end
 
 	local ScrW, ScrH = ScrW(), ScrH()
 	local DeltaTime = FrameTime()
@@ -34,6 +35,6 @@ API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
 			Snowflake.Y = -Snowflake.Size
 		end
 
-		surface.DrawCircle(Snowflake.X, Snowflake.Y, Snowflake.Size, 255, 255, 255, 255)
+		surface.DrawCircle(Snowflake.X, Snowflake.Y, Snowflake.Size, 255, 255, 255, 255 * Alpha)
 	end
 end)

@@ -17,7 +17,7 @@ do
 	end
 end
 
-API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
+function Snowflakes.Render()
 	local Alpha = API.GUI.GetAlpha()
 	if Alpha < 0.01 then return end
 
@@ -37,4 +37,16 @@ API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
 
 		surface.DrawCircle(Snowflake.X, Snowflake.Y, Snowflake.Size, 255, 255, 255, 255 * Alpha)
 	end
+end
+
+API.Callbacks.Add("ImGui::Draw", "BenzoScripts:Christmas", function()
+	if IsInGame() then return end
+
+	Snowflakes.Render()
+end)
+
+API.Callbacks.Add("Hook::PostRender", "BenzoScripts:Christmas", function()
+	if not IsInGame() then return end
+
+	Snowflakes.Render()
 end)

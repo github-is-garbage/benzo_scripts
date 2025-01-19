@@ -43,6 +43,18 @@ function bg_image.Fetch()
 	http.Fetch(bg_image.ImageURL, bg_image.OnFetchSuccess, bg_image.OnFetchFail)
 end
 
+function bg_image.Render()
+	local Alpha = API.GUI.GetAlpha()
+	if Alpha < 0.01 then return end
+
+	if not bg_image.Material then return end
+	if bg_image.Material:IsError() then return end
+
+	surface.SetMaterial(bg_image.Material)
+	surface.SetDrawColor(255, 255, 255, 255 * Alpha)
+	surface.DrawTexturedRect(bg_image.X, bg_image.Y, bg_image.Material:Width(), bg_image.Material:Height())
+end
+
 API.Callbacks.Add("ImGui::BuildWindowsCombo", "BenzoScripts:BackgroundImage", function()
 	if API.ImGui.MenuItem("Background Image", nil, bg_image.ShowMenu) then
 		bg_image.ShowMenu = not bg_image.ShowMenu
@@ -79,16 +91,16 @@ API.Callbacks.Add("ImGui::Draw", "BenzoScripts:BackgroundImage", function()
 	end
 end)
 
-API.Callbacks.Add("ImGui::Draw", "BenzoScripts:BackgroundImage_Render", function() -- Hook::PostRender doesn't run in main menu
-	local Alpha = API.GUI.GetAlpha()
-	if Alpha < 0.01 then return end
+API.Callbacks.Add("Hook::PostRender", "BenzoScripts:BackgroundImage_Render", function()
+	if not IsInGame() then return end
 
-	if not bg_image.Material then return end
-	if bg_image.Material:IsError() then return end
+	bg_image.Render()
+end)
 
-	surface.SetMaterial(bg_image.Material)
-	surface.SetDrawColor(255, 255, 255, 255 * Alpha)
-	surface.DrawTexturedRect(bg_image.X, bg_image.Y, bg_image.Material:Width(), bg_image.Material:Height())
+API.Callbacks.Add("ImGui::Draw", "BenzoScripts:BackgroundImage_Render", function()
+	if IsInGame() then return end
+
+	bg_image.Render()
 end)
 
 do
